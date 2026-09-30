@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#081018">
+  <title>BurnSight AI — Burn-In Screening Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body data-theme="dark">
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">BS</div>
+      <div class="brand-copy"><b>BurnSight <span>AI</span></b><small>Reliability Screening</small></div>
+    </div>
+    <div class="lab-status"><i></i><div><b>LOCAL INFERENCE ONLINE</b><small id="apiStatusText">API connected · secure</small></div></div>
+    <nav aria-label="Primary">
+      <button class="nav active" data-page="overview"><strong>◈</strong><span>Overview</span></button>
+      <button class="nav" data-page="screening"><strong>◉</strong><span>Batch Screening</span></button>
+      <button class="nav" data-page="drift"><strong>↗</strong><span>Drift Forecast</span></button>
+      <button class="nav" data-page="inspector"><strong>⌕</strong><span>Component Inspector</span></button>
+      <button class="nav" data-page="simulator"><strong>◇</strong><span>Scenario Lab</span></button>
+      <button class="nav" data-page="reports"><strong>▤</strong><span>QA Report</span></button>
+    </nav>
+    <div class="side-footer">
+      <span>BURNSIGHT AI</span>
+      <small>Reliability analytics workspace</small>
+      <small>Problem Statement 26170</small>
+    </div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div class="top-title">
+        <div class="crumb">BURNSIGHT / RELIABILITY SCREENING / PS 26170</div>
+        <h1 id="pageTitle">Overview</h1>
+      </div>
+      <div class="top-actions">
+        <div class="online"><i></i><span>SYSTEM ONLINE</span></div>
+        <select id="parameter" aria-label="Active parameter">
+          <option value="leakage">Leakage Current · µA</option>
+          <option value="iddq">Standby Current (Iddq) · µA</option>
+          <option value="delay">Propagation Delay · ns</option>
+        </select>
+        <div class="theme-switch" role="group" aria-label="Theme">
+          <button type="button" data-theme-choice="dark" class="theme-choice active">☾ Dark</button>
+          <button type="button" data-theme-choice="light" class="theme-choice">☼ Light</button>
+        </div>
+        <button class="btn primary" id="runReference">Load Reference Set</button>
+      </div>
+    </header>
+
+    <section id="overview" class="page active">
+      <div class="overview-hero">
+        <div class="hero-copy">
+          <span class="eyebrow">LATENT-DEFECT EARLY WARNING</span>
+          <h2>See the trajectory.<br><em>Not just the limit.</em></h2>
+          <p>BurnSight evaluates component behavior against a batch-relative envelope, detects abnormal trajectory signatures, and forecasts the 168h endpoint from early-life measurements.</p>
+          <div class="hero-buttons">
+            <button class="btn primary" data-go="screening">Open Batch Screening →</button>
+            <button class="btn ghost" data-go="drift">Open Drift Forecast</button>
+          </div>
+          <div class="hero-footnote"><span>0h</span><i></i><span>24h</span><i></i><span>96h</span><i></i><b>168h</b><span class="mono">/ adaptive screening chain</span></div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="radar-grid"></div>
+          <div class="radar-sweep"></div>
+          <div class="radar-ring r1"></div><div class="radar-ring r2"></div><div class="radar-ring r3"></div>
+          <div class="radar-core"><strong>AI</strong><small>SCREENING</small></div>
+          <div class="radar-point p1">A</div><div class="radar-point p2">B</div><div class="radar-point p3">168h</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><small>COMPONENTS ANALYZED</small><strong id="kTotal">—</strong><span id="kTotalSub">Reference batch</span></div>
+        <div class="kpi good"><small>NORMAL</small><strong id="kNormal">—</strong><span>Inside behavioral envelope</span></div>
+        <div class="kpi warn"><small>WATCH</small><strong id="kWatch">—</strong><span>Needs engineering review</span></div>
+        <div class="kpi danger"><small>HIGH RISK</small><strong id="kRisk">—</strong><span>Priority inspection queue</span></div>
+      </div>
+
+      <div class="grid-2 overview-grid">
+        <div class="panel chart-panel">
+          <div class="panel-head"><div><span class="eyebrow">BATCH ENVELOPE</span><h3>Behavioral fingerprint</h3></div><span class="badge" id="fingerprintBadge">REFERENCE SET</span></div>
+          <div id="fingerprint" class="fingerprint"></div>
+          <div class="note">Median trajectory and dispersion summarize how the batch evolves across burn-in checkpoints.</div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div><span class="eyebrow">PRIORITY QUEUE</span><h3>Highest-risk components</h3></div><button class="link" data-go="inspector">Open inspector →</button></div>
+          <div id="riskList" class="risk-list"></div>
+        </div>
+      </div>
+
+      <div class="panel process-panel">
+        <div class="panel-head"><div><span class="eyebrow">SCREENING CHAIN</span><h3>Analysis trace</h3></div><span class="mono">0h → 24h → 96h → 168h</span></div>
+        <div class="process-track">
+          <div><span>01</span><b>Ingest</b><small>Validated measurements</small></div><i></i>
+          <div><span>02</span><b>Baseline</b><small>Median / MAD envelope</small></div><i></i>
+          <div><span>03</span><b>Detect</b><small>Trajectory + anomaly signals</small></div><i></i>
+          <div><span>04</span><b>Forecast</b><small>168h regression</small></div><i></i>
+          <div><span>05</span><b>Decide</b><small>Evidence-led QA action</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screening" class="page">
+      <div class="page-head"><div><span class="eyebrow">MODULE A</span><h2>Dynamic Anomaly Detection</h2><p>Identify components that depart from the observed batch trajectory, including parts still below a fixed engineering limit.</p></div><div class="control-cluster"><label>Parameter<select class="page-param"><option value="leakage">Leakage Current</option><option value="iddq">Iddq</option><option value="delay">Propagation Delay</option></select></label><label>Engineering limit<input id="limitInput" type="number" step="0.01" placeholder="Default"></label><button class="btn primary" id="analyzeReference">Analyze Reference</button></div></div>
+      <div class="upload-bar panel"><div><b>Data ingestion</b><small>Required schema: Component_ID, 0h, 24h, 96h, 168h</small></div><input type="text" id="batchIdInput" placeholder="Batch ID" value="BATCH-LOCAL-001"><input type="file" id="csvFile" accept=".csv"><button class="btn ghost" id="uploadBtn">Upload & Analyze</button><button class="btn subtle" id="templateBtn">CSV structure</button></div>
+      <div class="screen-kpis">
+        <div class="mini-stat"><small>BATCH MEDIAN @168h</small><b id="screenMedian">—</b></div>
+        <div class="mini-stat"><small>P90 ENVELOPE @168h</small><b id="screenP90">—</b></div>
+        <div class="mini-stat"><small>ADAPTIVE SAFETY SLOPE</small><b id="screenSlope">—</b></div>
+        <div class="mini-stat"><small>ABSOLUTE LIMIT</small><b id="screenLimit">—</b></div>
+      </div>
+      <div class="grid-2 screening-grid">
+        <div class="panel chart-panel large"><div class="panel-head"><div><span class="eyebrow">TRAJECTORY MAP</span><h3>Behavioral envelope vs. flagged trajectories</h3></div><div class="legend"><i class="normal-dot"></i>batch envelope <i class="watch-dot"></i>watch <i class="risk-dot"></i>high risk</div></div><div id="trajectoryChart" class="chart scientific"></div></div>
+        <div class="panel"><div class="panel-head"><div><span class="eyebrow">DECISION LOGIC</span><h3>Signal stack</h3></div></div><div class="logic-stack"><div><b>01 · Batch-relative deviation</b><span>Median/MAD establishes a robust behavioral reference.</span></div><div><b>02 · Trajectory drift</b><span>Early, late, and end-to-end slopes expose latent change.</span></div><div><b>03 · Shape rarity</b><span>Isolation Forest identifies unusual feature combinations.</span></div><div><b>04 · Safety gate</b><span>Adaptive slope and engineering limit form the decision boundary.</span></div></div><div id="screenMethod" class="method-card"></div></div>
+      </div>
+      <div class="panel table-panel"><div class="panel-head"><div><span class="eyebrow">SCREENING TABLE</span><h3>Component decisions</h3></div><input id="tableSearch" placeholder="Search component…"></div><div class="table-scroll"><table><thead><tr><th>Component</th><th>0h</th><th>24h</th><th>96h</th><th>168h</th><th>Risk</th><th>Status</th><th></th></tr></thead><tbody id="screenTable"></tbody></table></div></div>
+    </section>
+
+    <section id="drift" class="page">
+      <div class="page-head"><div><span class="eyebrow">MODULE B</span><h2>168h Drift Forecast</h2><p>Use Value_0h and Value_24h to forecast the 168h measurement and compare it with the engineering threshold.</p></div><div class="model-chip">MODEL · PARAMETER-SPECIFIC RF REGRESSION</div></div>
+      <div class="grid-2 drift-grid"><div class="panel form-panel"><div class="panel-head"><div><span class="eyebrow">EARLY-LIFE INPUTS</span><h3>Forecast request</h3></div></div><div class="field-grid"><label>Parameter<select id="driftParam"><option value="leakage">Leakage Current</option><option value="iddq">Iddq</option><option value="delay">Propagation Delay</option></select></label><label>Value_0h<input id="v0" type="number" step="0.001" value="10"></label><label>Value_24h<input id="v24" type="number" step="0.001" value="15"></label></div><button class="btn primary wide" id="predictBtn">Forecast 168h →</button><div class="model-metrics" id="modelMetrics"></div></div>
+        <div class="panel forecast-panel"><div class="forecast-top"><div><span class="eyebrow">FORECAST OUTPUT</span><h3>Predicted 168h</h3></div><span class="risk-pill" id="forecastRisk">READY</span></div><div class="forecast-value"><strong id="predValue">—</strong><span id="predUnit">µA</span></div><div id="forecastViz" class="forecast-viz"></div><div class="uncertainty" id="uncertainty">Enter Value_0h and Value_24h to run the model.</div><div class="forecast-meta"><span id="forecastLead">Lead-time signal —</span><span id="forecastMargin">Margin —</span></div></div></div>
+      <div class="grid-3"><div class="panel insight"><span class="eyebrow">EARLY SIGNAL</span><h3>Early slope</h3><strong id="earlySlope">—</strong><small>change per hour</small></div><div class="panel insight"><span class="eyebrow">SAFETY GATE</span><h3>Engineering limit</h3><strong id="driftLimit">—</strong><small>configured parameter default</small></div><div class="panel insight"><span class="eyebrow">MODEL QUALITY</span><h3>Validation MAE</h3><strong id="mae">—</strong><small>held-out validation set</small></div></div>
+      <div class="panel forecast-readout"><div><span class="eyebrow">MODEL READOUT</span><h3>How the forecast is interpreted</h3></div><div class="readout-grid"><div><b>Input space</b><span>Value_0h, Value_24h, early slope</span></div><div><b>Output</b><span>Expected Value_168h</span></div><div><b>Uncertainty</b><span>Ensemble spread across trees</span></div><div><b>Decision</b><span>Compare forecast with engineering target</span></div></div></div>
+    </section>
+
+    <section id="inspector" class="page">
+      <div class="page-head"><div><span class="eyebrow">QA WORKBENCH</span><h2>Component Inspector</h2><p>Trace a single component from raw measurements to evidence, forecast, and estimated lead time.</p></div><label>Component<select id="componentSelect"></select></label></div>
+      <div id="inspectorBody"></div>
+    </section>
+
+    <section id="simulator" class="page">
+      <div class="page-head"><div><span class="eyebrow">DECISION SUPPORT</span><h2>Scenario Lab</h2><p>Test alternative early trajectories and observe how the 168h forecast changes against a chosen safety target.</p></div></div>
+      <div class="grid-2"><div class="panel form-panel"><div class="panel-head"><div><span class="eyebrow">COUNTERFACTUAL INPUT</span><h3>Scenario configuration</h3></div></div><label>Parameter<select id="simParam"><option value="leakage">Leakage Current</option><option value="iddq">Iddq</option><option value="delay">Propagation Delay</option></select></label><div class="field-grid"><label>Value_0h<input id="s0" type="number" step="0.001" value="10"></label><label>Value_24h<input id="s24" type="number" step="0.001" value="15"></label></div><label>Safety target at 168h<input id="target" type="number" step="0.001" value="50"></label><button class="btn primary wide" id="simulateBtn">Evaluate Scenario</button></div>
+        <div class="panel scenario-panel"><div class="forecast-top"><div><span class="eyebrow">SCENARIO RESULT</span><h3>Predicted endpoint</h3></div><span id="simRisk" class="risk-pill">READY</span></div><div class="scenario-result"><strong id="simValue">—</strong><span id="simUnit">µA</span></div><div id="simStatus" class="big-status">Awaiting scenario</div><div class="scenario-meter"><i id="simMeter"></i><b id="simMarker"></b></div><div class="scenario-grid"><div><small>Margin to target</small><b id="simMargin">—</b></div><div><small>Estimated crossing</small><b id="simCrossing">—</b></div><div><small>Uncertainty</small><b id="simUncertainty">—</b></div></div><p id="simExplain">The model will compare the forecasted 168h endpoint with the configured target.</p></div></div>
+    </section>
+
+    <section id="reports" class="page">
+      <div class="page-head"><div><span class="eyebrow">QUALITY ASSURANCE</span><h2>Screening Report</h2><p>Generate a formal evidence pack for review, sign-off, or presentation.</p></div><button class="btn primary" id="printReport">Print / Save PDF</button></div>
+      <div class="report panel" id="report"></div>
+    </section>
+
+    <footer><span>BurnSight AI</span><span>Local inference · parameter-selectable · evidence-led analytics</span><span>Problem Statement 26170</span></footer>
+  </main>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>
